@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>工头帮</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--标准mui.css-->
+	<link href="common/mui/css/mui.min.css" rel="stylesheet" />
+	<link href="common/mui/css/mui.picker.css" rel="stylesheet" />
+	<link href="common/mui/css/mui.poppicker.css" rel="stylesheet" />
+	<!--App自定义的css-->
+	<link rel="stylesheet" href="common/css/gtbicon.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="common/css/common.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="static/css/index.css" type="text/css" charset="utf-8">
+	<script src="common/mui/js/mui.min1.js"></script>
+	<script src="common/mui/js/mui.picker.min.js"></script>
+	<script src="common/mui/js/mui.poppicker.js"></script>
+	<script src="common/mui/js/mui.zoom.js"></script>
+	<script src="common/mui/js/mui.previewimage.js"></script>
+	<script src="common/lib/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/jquery.plug/jquery.goup.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/lib/avalon.mobile.min.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		avalon.config({debug: false});
+	</script>
+	<script src="router/main.js"></script>
+</head>
+<body ms-controller="main" class="gtbui">
+<div style="position: relative;" ms-click="eventLst.downBottomFunc">
+	<img ms-attr-src="promotionImg" class="w-fill">
+	<div class="pv10 gui-arrow">
+		<!--<p class="mb0 c666 fz-16">活动规则</p>-->
+		<p class="pl10 mb0 cfff fz-16">{{promotionDes}}</p>
+		<div class="mui-icon mui-icon-arrowdown"></div>
+	</div>
+</div>
+
+<div class="ctg-top-bar bgf4f4f4">
+	<ul>
+		<li ms-class-1="gtb-active:type.typeId==curType" ms-class="type{{type.typeId}}" ms-class-2="type-first:$index==0" ms-click="eventLst.clickTypeFunc(type.typeId, type.brand)" ms-repeat-type="typeAndBrand">{{type.typeName}}</li>
+	</ul>
+</div>
+<div class="ctg-top-bar">
+	<ul>
+		<li ms-class-1="gtb-active:brand.brandId==curBrand" ms-repeat-brand="brandLst" ms-click="eventLst.clickBrandFunc(brand.brandId)">{{brand.brandName}}</li>
+	</ul>
+</div>
+<div class="gi">
+	<ul>
+		<li ms-repeat-product=productDetail>
+			<div class="bimg"><img ms-attr-src="product.bigPic||'common/images/gtb-default.jpg'" onerror="this.src='common/images/gtb-default.jpg'"  ms-attr-data-preview-src="''" ms-attr-data-preview-group="Math.random()"></div>
+			<div class="btxt">
+				<div class="c666 sp">{{product.name}}</div>
+				<div class="c9a9a9a sp">单价：<span class="cff3a41">{{product.priceDes}}</span></div>
+				<div class="addcart" ms-click="eventLst.selectBuyFunc(product)"></div>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="mt10" id="toflaw">
+	<img ms-attr-src="promotionImgFlaw" class="w-fill">
+</div>
+<div style="position: fixed;top:0;left:0;height:100%;width:100%;background-color: #f7f7f7;display: none;" class="tempMask"></div>
+<div class="mui-control-content loading"></div>
+<div id="buy-modal" class="mui-modal btm-modal" style="overflow:auto;">
+	<div class="modal-head">
+		<a class="mui-icon mui-icon-close mui-pull-right c676767" ms-click="eventLst.hideCommonFunc('#buy-modal')"></a>
+	</div>
+	<div class="mui-content bgfff ps10 pb10" style="height: 100%;">
+		<div style="min-height:70px;">
+			<img class="mui-media-object mui-pull-left img70 mr10" ms-attr-src="curProductInfo.img||'common/images/gtb-default.jpg'" ms-attr-data-preview-src="curProductInfo.bigPic||'common/images/gtb-default.jpg'" ms-attr-data-preview-group="Math.random()">
+			<div class="mui-media-body">
+				<p class='mui-ellipsis c666 fz-16 pt10 mb0'>{{curProductInfo.name}}</p>
+				<p class='mui-ellipsis c999 fz-14 mb0'>
+					<img src="common/images/active/popcu.png" class="wh14 mr5" ms-if="curProductInfo.hasPromotion=='0'"><span ms-if="curProductInfo.hasPromotion!='0'">单价：</span><span class="cff3939" ms-class-1="fz-16:curProductInfo.hasPromotion=='0'">{{curProductInfo.priceDes}}</span>
+				</p>
+				<p class='c999 fz-14 mb0' style="margin-left:80px;position: relative;" ms-if="curProductInfo.hasRebate=='0'">
+					<img src="common/images/active/popfan.png" class="wh14" style="position: absolute;left: 0;top:0;">
+					<span style="padding-left:18px;display:inline-block;">{{curProductInfo.rebateDes}}</span>
+				</p>
+			</div>
+		</div>
+		<div style="height: 1px;"></div>
+		<div class="md-1 pt10 mt10">
+			<div class="mdtxt c676767 fz-18">规格</div>
+			<div class="mdradio">
+				<span class="mb10" ms-class="active:curStandard==specs.standardId" ms-repeat-specs="specsList" ms-click="eventLst.changeSpecsFunc(specs)">{{specs.standardName}}</span>
+			</div>
+		</div>
+		<div class="md-1 pt10" ms-repeat-specs="specsList" ms-if-loop="curStandard==specs.standardId&&specs.colorList.length!=0">
+			<div class="mdtxt c676767 fz-18">颜色</div>
+			<div class="mdradio">
+				<span class="mb10" ms-class="active:curColor==color.colorName" ms-repeat-color="specs.colorList" ms-click="eventLst.changeColorFunc(color)">{{color.colorName}}</span>
+			</div>
+		</div>
+		<div class="md-1 pt10">
+			<div class="mui-input-row">
+				<label class="c676767 pl0">购买数量</label>
+				<div class="mui-numbox" data-numbox-min='1' data-numbox-max="9999" style="width: 140px;">
+					<button class="mui-btn mui-numbox-btn-minus buy-btn-minus" type="button">-</button>
+					<input class="mui-numbox-input" type="tel" ms-duplex="quantity" maxlength="4" />
+					<button class="mui-btn mui-numbox-btn-plus buy-btn-plus" type="button">+</button>
+				</div>
+			</div>
+		</div>
+		<div class="md-1 pt10 mt10">
+			<div class="mui-pull-right">
+				<p class='pv10 c999 fz-20'>总金额：<span class="cff3939">{{curProductInfo.price*quantity|currency}}</span></p>
+			</div>
+		</div>
+		<div class="pt10">
+			<button type="button" class="mui-btn mui-btn-warning mui-btn-block pv5" ms-click="eventLst.addCartFunc">加入购物车</button>
+		</div>
+	</div>
+</div>
+</body>
+</html>
